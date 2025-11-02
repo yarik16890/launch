@@ -7,4 +7,9 @@ public class ItemModule extends Item {
         setUnlocalizedName(name);
         setTextureName("modulartech:" + name);
     }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "item." + super.getUnlocalizedName().substring(5);
+    }
 }

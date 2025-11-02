@@ -18,24 +18,6 @@ public class TileEntityIntegrator extends TileEntity implements IInventory {
     public int mode = 0; // 0 - integrate, 1 - remove, 2 - upgrade
 
     @Override
-    public void updateEntity() {
-        if (!worldObj.isRemote) {
-            ItemStack tool = inventory[0];
-            ItemStack module = inventory[1];
-            if (tool != null && tool.getItem() instanceof ItemModularTool && module != null) {
-                if (mode == 0 && module.getItem() instanceof ItemModule) {
-                    ItemPowerPickaxe.setModuleLevel(tool, ((ItemModule) module.getItem()).getUnlocalizedName(), 1);
-                    decrStackSize(1, 1);
-                } else if (mode == 1 && module.getItem() instanceof ItemModule) {
-                    ItemPowerPickaxe.setModuleLevel(tool, ((ItemModule) module.getItem()).getUnlocalizedName(), 0);
-                } else if (mode == 2 && module.getItem() instanceof UpgradeTier) {
-                    // This is complex, skipping for now
-                }
-            }
-        }
-    }
-
-    @Override
     public int getSizeInventory() {
         return inventory.length;
     }

@@ -2,12 +2,12 @@ package com.addon.modulartech.items;
 
 import com.addon.modulartech.ModularTech;
 import com.google.common.collect.Multimap;
+import ic2.api.item.IElectricItemManager;
+import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.item.ItemSword;
 import net.minecraft.world.World;
 
@@ -40,7 +40,7 @@ public class ItemPowerSword extends ItemSword implements ISpecialElectricItem {
 
     @Override
     public boolean canProvideEnergy(ItemStack itemStack) {
-        return false;
+        return EnergyHelper.canProvideEnergy(itemStack);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class ItemPowerSword extends ItemSword implements ISpecialElectricItem {
 
     @Override
     public IElectricItemManager getManager(ItemStack itemStack) {
-        return ElectricItemManager.instance;
+        return EnergyHelper.getManager(itemStack);
     }
 }

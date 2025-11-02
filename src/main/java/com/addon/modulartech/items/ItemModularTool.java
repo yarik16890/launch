@@ -3,10 +3,17 @@ package com.addon.modulartech.items;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.item.Item;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import java.util.List;
 
 public class ItemModularTool extends Item implements ISpecialElectricItem {
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
+        list.add("Energy: " + ElectricItemManager.instance.getCharge(stack) + " / " + getMaxCharge(stack));
+    }
 
     public double maxCharge = 10000;
     public int tier = 1;

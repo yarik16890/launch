@@ -3,12 +3,12 @@ package com.addon.modulartech.items;
 import com.addon.modulartech.ModularTech;
 import ic2.api.item.IElectricItemManager;
 import ic2.api.item.ISpecialElectricItem;
+import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 
 public class ItemPowerPickaxe extends ItemPickaxe implements ISpecialElectricItem {
     @Override
@@ -36,10 +36,6 @@ public class ItemPowerPickaxe extends ItemPickaxe implements ISpecialElectricIte
         }
         return stack;
     }
-
-    @Override
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, int x, int y, int z, EntityPlayer player) {
@@ -73,7 +69,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 
     @Override
     public boolean canProvideEnergy(ItemStack itemStack) {
-        return false;
+        return EnergyHelper.canProvideEnergy(itemStack);
     }
 
     @Override
@@ -103,6 +99,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 
     @Override
     public IElectricItemManager getManager(ItemStack itemStack) {
-        return ElectricItemManager.instance;
+        return EnergyHelper.getManager(itemStack);
     }
 }
