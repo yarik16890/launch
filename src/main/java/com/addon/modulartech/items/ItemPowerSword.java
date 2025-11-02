@@ -2,23 +2,17 @@ package com.addon.modulartech.items;
 
 import com.addon.modulartech.ModularTech;
 import com.google.common.collect.Multimap;
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 import net.minecraft.world.World;
+import java.util.UUID;
 
-public class ItemPowerSword extends ItemSword implements ISpecialElectricItem {
-
-    public double maxCharge = 10000;
-    public int tier = 1;
-    public double transferLimit = 100;
+public class ItemPowerSword extends ItemModularTool {
 
     public ItemPowerSword() {
-        super(ToolMaterial.EMERALD);
+        super(10000, 1);
         setUnlocalizedName("power_sword");
         setTextureName("modulartech:power_sword");
     }
@@ -34,42 +28,8 @@ public class ItemPowerSword extends ItemSword implements ISpecialElectricItem {
     @Override
     public Multimap getItemAttributeModifiers(ItemStack stack) {
         Multimap multimap = super.getItemAttributeModifiers(stack);
-        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", 6 + ItemModularTool.getModuleLevel(stack, "module_damage") * 1, 0));
+        multimap.removeAll(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
+        multimap.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF"), "Weapon modifier", 6 + getModuleLevel(stack, "module_damage") * 1, 0));
         return multimap;
-    }
-
-    @Override
-    public boolean canProvideEnergy(ItemStack itemStack) {
-        return EnergyHelper.canProvideEnergy(itemStack);
-    }
-
-    @Override
-    public net.minecraft.item.Item getChargedItem(ItemStack itemStack) {
-        return this;
-    }
-
-    @Override
-    public net.minecraft.item.Item getEmptyItem(ItemStack itemStack) {
-        return this;
-    }
-
-    @Override
-    public double getMaxCharge(ItemStack itemStack) {
-        return maxCharge;
-    }
-
-    @Override
-    public int getTier(ItemStack itemStack) {
-        return tier;
-    }
-
-    @Override
-    public double getTransferLimit(ItemStack itemStack) {
-        return transferLimit;
-    }
-
-    @Override
-    public IElectricItemManager getManager(ItemStack itemStack) {
-        return EnergyHelper.getManager(itemStack);
     }
 }

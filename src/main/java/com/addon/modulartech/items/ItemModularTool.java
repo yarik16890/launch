@@ -1,23 +1,26 @@
 package com.addon.modulartech.items;
 
-import ic2.api.item.IElectricItemManager;
-import ic2.api.item.ISpecialElectricItem;
-import net.minecraft.item.Item;
+import ic2.api.item.IElectricItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import java.util.List;
 
-public class ItemModularTool extends Item implements ISpecialElectricItem {
+public class ItemModularTool extends Item implements IElectricItem {
+    public double maxCharge;
+    public int tier;
+
+    public ItemModularTool(double maxCharge, int tier) {
+        this.maxCharge = maxCharge;
+        this.tier = tier;
+        setMaxDamage(27);
+    }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean bool) {
-        list.add("Energy: " + ElectricItemManager.instance.getCharge(stack) + " / " + getMaxCharge(stack));
+        list.add("Energy: " + getCharge(stack) + " / " + getMaxCharge(stack));
     }
-
-    public double maxCharge = 10000;
-    public int tier = 1;
-    public double transferLimit = 100;
 
     @Override
     public boolean canProvideEnergy(ItemStack itemStack) {
@@ -46,12 +49,49 @@ public class ItemModularTool extends Item implements ISpecialElectricItem {
 
     @Override
     public double getTransferLimit(ItemStack itemStack) {
-        return transferLimit;
+        return 100;
     }
 
     @Override
-    public IElectricItemManager getManager(ItemStack itemStack) {
-        return ElectricItemManager.instance;
+    public double charge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean simulate) {
+        NBTTagCompound nbt = getNBT(itemStack);
+        double energy = nbt.getDouble("energy");
+        if (amount > maxCharge - energy) {
+            amount = maxCharge - energy;
+        }
+        if (!simulate) {
+            nbt.setDouble("energy", energy + amount);
+            itemStack.setItemDamage(26 - (int)(26 * (energy + amount) / maxCharge));
+        }
+        return amount;
+    }
+
+    @Override
+    public double discharge(ItemStack itemStack, double amount, int tier, boolean ignoreTransferLimit, boolean externally, boolean simulate) {
+        NBTTagCompound nbt = getNBT(itemStack);
+        double energy = nbt.getDouble("energy");
+        if (amount > energy) {
+            amount = energy;
+        }
+        if (!simulate) {
+            nbt.setDouble("energy", energy - amount);
+            itemStack.setItemDamage(26 - (int)(26 * (energy - amount) / maxCharge));
+        }
+        return amount;
+    }
+
+    @Override
+    public double getCharge(ItemStack itemStack) {
+        return getNBT(itemStack).getDouble("energy");
+    }
+
+    @Override
+    public boolean canUse(ItemStack itemStack, double amount) {
+        return getCharge(itemStack) >= amount;
+    }
+
+    public void use(ItemStack itemStack, double amount, EntityPlayer player) {
+        discharge(itemStack, amount, Integer.MAX_VALUE, true, false, false);
     }
 
     public static int getModuleLevel(ItemStack stack, String module) {
@@ -69,5 +109,12 @@ public class ItemModularTool extends Item implements ISpecialElectricItem {
             stack.getTagCompound().setTag("modules", new NBTTagCompound());
         }
         stack.getTagCompound().getCompoundTag("modules").setInteger(module, level);
+    }
+
+    private NBTTagCompound getNBT(ItemStack itemStack) {
+        if (itemStack.getTagCompound() == null) {
+            itemStack.setTagCompound(new NBTTagCompound());
+        }
+        return itemStack.getTagCompound();
     }
 }

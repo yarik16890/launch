@@ -1,12 +1,13 @@
 package com.addon.modulartech.gui;
 
+import com.addon.modulartech.items.ItemPowerPickaxe;
+import com.addon.modulartech.network.PacketHandler;
+import com.addon.modulartech.network.SelectModuleMessage;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import com.addon.modulartech.items.ItemModularTool;
-import net.minecraft.client.gui.GuiButton;
 
 public class GuiPowerPickaxe extends GuiContainer {
 
@@ -25,9 +26,6 @@ public class GuiPowerPickaxe extends GuiContainer {
         super.initGui();
         buttonList.add(new GuiButton(0, guiLeft + 8, guiTop + 20, 100, 20, "Area Miner"));
         buttonList.add(new GuiButton(1, guiLeft + 8, guiTop + 42, 100, 20, "Efficiency"));
-import com.addon.modulartech.network.PacketHandler;
-import com.addon.modulartech.network.SelectModuleMessage;
-
         buttonList.add(new GuiButton(2, guiLeft + 8, guiTop + 64, 100, 20, "Fortune"));
         buttonList.add(new GuiButton(3, guiLeft + 8, guiTop + 86, 100, 20, "Autosmelt"));
     }
@@ -46,10 +44,10 @@ import com.addon.modulartech.network.SelectModuleMessage;
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        fontRendererObj.drawString("Area Miner: " + ItemModularTool.getModuleLevel(itemStack, "module_area_miner"), 110, 26, 4210752);
-        fontRendererObj.drawString("Efficiency: " + ItemModularTool.getModuleLevel(itemStack, "module_efficiency"), 110, 48, 4210752);
-        fontRendererObj.drawString("Fortune: " + ItemModularTool.getModuleLevel(itemStack, "module_fortune"), 110, 70, 4210752);
-        fontRendererObj.drawString("Autosmelt: " + ItemModularTool.getModuleLevel(itemStack, "module_autosmelt"), 110, 92, 4210752);
+        fontRendererObj.drawString("Area Miner: " + ItemPowerPickaxe.getModuleLevel(itemStack, "module_area_miner"), 110, 26, 4210752);
+        fontRendererObj.drawString("Efficiency: " + ItemPowerPickaxe.getModuleLevel(itemStack, "module_efficiency"), 110, 48, 4210752);
+        fontRendererObj.drawString("Fortune: " + ItemPowerPickaxe.getModuleLevel(itemStack, "module_fortune"), 110, 70, 4210752);
+        fontRendererObj.drawString("Autosmelt: " + ItemPowerPickaxe.getModuleLevel(itemStack, "module_autosmelt"), 110, 92, 4210752);
     }
 
     @Override

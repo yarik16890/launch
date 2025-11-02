@@ -7,6 +7,8 @@ import com.addon.modulartech.tileentities.TileEntityIntegrator;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import cpw.mods.fml.common.registry.GameRegistry;
+import ic2.api.item.IElectricItem;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -44,22 +46,22 @@ public class IntegratorRunMessage implements IMessage {
                 TileEntityIntegrator integrator = (TileEntityIntegrator) tileEntity;
                 ItemStack tool = integrator.getStackInSlot(0);
                 ItemStack module = integrator.getStackInSlot(1);
-                if (tool != null && tool.getItem() instanceof ItemModularTool && module != null) {
-                    String selectedModule = tool.getTagCompound().getString("selected_module");
-                    if (integrator.mode == 0 && module.getItem() instanceof ItemModule) {
-                        ItemModularTool.setModuleLevel(tool, module.getUnlocalizedName(), 1);
+                if (tool != null && tool.getItem() instanceof IElectricItem) {
+                    if (integrator.mode == 0 && module != null && module.getItem() instanceof ItemModule) {
+                        ItemModularTool.setModuleLevel(tool, module.getUnlocalizedName().replace("item.", ""), 1);
                         integrator.decrStackSize(1, 1);
-import cpw.mods.fml.common.registry.GameRegistry;
-
                     } else if (integrator.mode == 1) {
+                        String selectedModule = tool.getTagCompound().getString("selected_module");
                         ItemModularTool.setModuleLevel(tool, selectedModule, 0);
                         integrator.setInventorySlotContents(1, new ItemStack(GameRegistry.findItem("modulartech", selectedModule.replace("item.", ""))));
-                    } else if (integrator.mode == 2 && module.getItem() instanceof UpgradeTier) {
+                    } else if (integrator.mode == 2 && module != null && module.getItem() instanceof UpgradeTier) {
+                        String selectedModule = tool.getTagCompound().getString("selected_module");
                         int currentLevel = ItemModularTool.getModuleLevel(tool, selectedModule);
                         ItemModularTool.setModuleLevel(tool, selectedModule, currentLevel + 1);
                         integrator.decrStackSize(1, 1);
                     }
                 }
+                ctx.getServerHandler().playerEntity.openContainer.detectAndSendChanges();
             }
             return null;
         }

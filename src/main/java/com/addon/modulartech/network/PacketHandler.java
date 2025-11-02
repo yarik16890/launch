@@ -11,5 +11,6 @@ public class PacketHandler {
         INSTANCE.registerMessage(ModeSwitchMessage.Handler.class, ModeSwitchMessage.class, 0, Side.SERVER);
         INSTANCE.registerMessage(IntegratorRunMessage.Handler.class, IntegratorRunMessage.class, 1, Side.SERVER);
         INSTANCE.registerMessage(SelectModuleMessage.Handler.class, SelectModuleMessage.class, 2, Side.SERVER);
+        INSTANCE.registerMessage(IntegratorUpdatePacket.Handler.class, IntegratorUpdatePacket.class, 3, Side.CLIENT);
     }
 }

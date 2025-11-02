@@ -7,10 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 
-import com.addon.modulartech.items.ItemModularTool;
 import com.addon.modulartech.items.ItemModule;
 import com.addon.modulartech.items.ItemPowerPickaxe;
 import com.addon.modulartech.items.upgrades.UpgradeTier;
+import ic2.api.item.IElectricItem;
 
 public class TileEntityIntegrator extends TileEntity implements IInventory {
 

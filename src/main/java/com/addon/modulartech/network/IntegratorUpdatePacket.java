@@ -5,17 +5,19 @@ import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntity;
 
-public class ModeSwitchMessage implements IMessage {
-    private int x, y, z;
+public class IntegratorUpdatePacket implements IMessage {
+    private int x, y, z, mode;
 
-    public ModeSwitchMessage() {}
+    public IntegratorUpdatePacket() {}
 
-    public ModeSwitchMessage(int x, int y, int z) {
+    public IntegratorUpdatePacket(int x, int y, int z, int mode) {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.mode = mode;
     }
 
     @Override
@@ -23,6 +25,7 @@ public class ModeSwitchMessage implements IMessage {
         x = buf.readInt();
         y = buf.readInt();
         z = buf.readInt();
+        mode = buf.readInt();
     }
 
     @Override
@@ -30,16 +33,15 @@ public class ModeSwitchMessage implements IMessage {
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
+        buf.writeInt(mode);
     }
 
-    public static class Handler implements IMessageHandler<ModeSwitchMessage, IMessage> {
+    public static class Handler implements IMessageHandler<IntegratorUpdatePacket, IMessage> {
         @Override
-        public IMessage onMessage(ModeSwitchMessage message, MessageContext ctx) {
-            TileEntity tileEntity = ctx.getServerHandler().playerEntity.worldObj.getTileEntity(message.x, message.y, message.z);
+        public IMessage onMessage(IntegratorUpdatePacket message, MessageContext ctx) {
+            TileEntity tileEntity = Minecraft.getMinecraft().theWorld.getTileEntity(message.x, message.y, message.z);
             if (tileEntity instanceof TileEntityIntegrator) {
-                TileEntityIntegrator integrator = (TileEntityIntegrator) tileEntity;
-                integrator.mode = (integrator.mode + 1) % 3;
-                PacketHandler.INSTANCE.sendToAll(new IntegratorUpdatePacket(message.x, message.y, message.z, integrator.mode));
+                ((TileEntityIntegrator) tileEntity).mode = message.mode;
             }
             return null;
         }
