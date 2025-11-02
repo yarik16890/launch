@@ -1,0 +1,16 @@
+[
+{
+  "modid": "ic2addon",
+  "name": "IC2 Addon",
+  "description": "An addon for IC2.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["AddonDev"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
