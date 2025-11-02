@@ -1,6 +1,6 @@
-package com.addon.ic2addon.gui;
+package com.addon.modulartech.gui;
 
-import com.addon.ic2addon.tileentities.TileEntityCompressor;
+import com.addon.modulartech.tileentities.TileEntityCompressor;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiCompressor extends GuiContainer {
 
-    private static final ResourceLocation texture = new ResourceLocation("ic2addon", "textures/gui/compressor.png");
+    private static final ResourceLocation texture = new ResourceLocation("modulartech", "textures/gui/compressor.png");
     private TileEntityCompressor tileEntity;
 
     public GuiCompressor(InventoryPlayer inventoryPlayer, TileEntityCompressor tileEntity) {

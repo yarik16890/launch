@@ -1,24 +1,20 @@
-package com.addon.ic2addon.tileentities;
+package com.addon.modulartech.tileentities;
 
+import com.addon.modulartech.recipes.CompressorRecipes;
+import ic2.api.energy.event.EnergyTileLoadEvent;
+import ic2.api.energy.event.EnergyTileUnloadEvent;
+import ic2.api.energy.tile.IEnergySink;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import ic2.api.energy.tile.IEnergySink;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import ic2.api.energy.tile.IEnergySink;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class TileEntityCompressor extends TileEntity implements IInventory, IEnergySink {
+    private boolean addedToEnet = false;
 
     private ItemStack[] inventory = new ItemStack[8]; // 4 input, 4 output
     private double energy = 0;
@@ -168,6 +164,10 @@ public class TileEntityCompressor extends TileEntity implements IInventory, IEne
     @Override
     public void updateEntity() {
         if (!worldObj.isRemote) {
+            if (!addedToEnet) {
+                MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
+                addedToEnet = true;
+            }
             if (canProcess()) {
                 energy -= 10;
                 progress++;
@@ -181,12 +181,29 @@ public class TileEntityCompressor extends TileEntity implements IInventory, IEne
         }
     }
 
+    @Override
+    public void onChunkUnload() {
+        if (addedToEnet) {
+            MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
+            addedToEnet = false;
+        }
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        onChunkUnload();
+    }
+
     private boolean canProcess() {
         for (int i = 0; i < 4; i++) {
-            if (inventory[i] != null && inventory[i].getItem() == net.minecraft.init.Items.coal) {
-                for (int j = 4; j < 8; j++) {
-                    if (inventory[j] == null || (inventory[j].getItem() == net.minecraft.init.Items.diamond && inventory[j].stackSize < 64)) {
-                        return energy >= 10;
+            if (inventory[i] != null) {
+                ItemStack result = CompressorRecipes.getInstance().getRecipeResult(inventory[i]);
+                if (result != null) {
+                    for (int j = 4; j < 8; j++) {
+                        if (inventory[j] == null || (inventory[j].isItemEqual(result) && inventory[j].stackSize < result.getMaxStackSize())) {
+                            return energy >= 10;
+                        }
                     }
                 }
             }
@@ -196,15 +213,18 @@ public class TileEntityCompressor extends TileEntity implements IInventory, IEne
 
     private void processItem() {
         for (int i = 0; i < 4; i++) {
-            if (inventory[i] != null && inventory[i].getItem() == net.minecraft.init.Items.coal) {
-                decrStackSize(i, 1);
-                for (int j = 4; j < 8; j++) {
-                    if (inventory[j] == null) {
-                        setInventorySlotContents(j, new ItemStack(net.minecraft.init.Items.diamond));
-                        return;
-                    } else if (inventory[j].getItem() == net.minecraft.init.Items.diamond) {
-                        inventory[j].stackSize++;
-                        return;
+            if (inventory[i] != null) {
+                ItemStack result = CompressorRecipes.getInstance().getRecipeResult(inventory[i]);
+                if (result != null) {
+                    decrStackSize(i, 1);
+                    for (int j = 4; j < 8; j++) {
+                        if (inventory[j] == null) {
+                            setInventorySlotContents(j, result.copy());
+                            return;
+                        } else if (inventory[j].isItemEqual(result)) {
+                            inventory[j].stackSize++;
+                            return;
+                        }
                     }
                 }
             }

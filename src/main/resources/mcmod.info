@@ -1,8 +1,8 @@
 [
 {
-  "modid": "ic2addon",
-  "name": "IC2 Addon",
-  "description": "An addon for IC2.",
+  "modid": "modulartech",
+  "name": "ModularTech",
+  "description": "A mod with modular tools.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

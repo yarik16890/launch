@@ -1,6 +1,6 @@
-package com.addon.ic2addon.gui;
+package com.addon.modulartech.gui;
 
-import com.addon.ic2addon.tileentities.TileEntityCompressor;
+import com.addon.modulartech.tileentities.TileEntityCompressor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

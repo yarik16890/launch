@@ -1,7 +1,7 @@
-package com.addon.ic2addon.blocks;
+package com.addon.modulartech.blocks;
 
-import com.addon.ic2addon.IC2Addon;
-import com.addon.ic2addon.tileentities.TileEntityCompressor;
+import com.addon.modulartech.ModularTech;
+import com.addon.modulartech.tileentities.TileEntityCompressor;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -17,7 +17,7 @@ public class BlockCompressor extends BlockContainer {
     public BlockCompressor() {
         super(Material.iron);
         setBlockName(name);
-        setBlockTextureName("ic2addon:" + name);
+        setBlockTextureName("modulartech:" + name);
         setCreativeTab(CreativeTabs.tabRedstone);
         GameRegistry.registerBlock(this, name);
     }
@@ -30,7 +30,7 @@ public class BlockCompressor extends BlockContainer {
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ) {
         if (!world.isRemote) {
-            player.openGui(IC2Addon.instance, 0, world, x, y, z);
+            player.openGui(ModularTech.instance, 0, world, x, y, z);
         }
         return true;
     }
